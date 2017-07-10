@@ -106,6 +106,14 @@ namespace kat {
         void setCanonical(uint16_t index, bool canonical) {
             this->input[index].canonical = canonical;
         }
+		
+	bool isTenx(uint16_t index) const {
+            return input[index].tenx;
+        }
+		
+	void setTenx(uint16_t index, bool tenx) {
+            this->input[index].tenx = tenx;
+        }
 
         uint16_t getD1Bins() const {
             return d1Bins;

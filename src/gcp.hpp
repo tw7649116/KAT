@@ -86,6 +86,14 @@ namespace kat {
         void setCanonical(bool canonical) {
             this->input.canonical = canonical;
         }
+		
+	bool isTenx() const {
+            return input.tenx;
+        }
+		
+	void setTenx(bool tenx) {
+            this->input.tenx = tenx;
+        }
 
         uint16_t getCvgBins() const {
             return cvgBins;

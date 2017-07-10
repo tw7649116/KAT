@@ -200,9 +200,9 @@ uint64_t kat::JellyfishHelper::getCount(LargeHashArrayPtr hash, const mer_dna& k
  * @param parser The parser that handles the input stream and chunking
  * @param canonical whether or not the kmers should be treated as canonical or not
  */
-void kat::JellyfishHelper::countSlice(HashCounter& ary, SequenceParser& parser, bool canonical) {
+void kat::JellyfishHelper::countSlice(HashCounter& ary, SequenceParser& parser, bool canonical, bool tenx) {
 
-    MerIterator mers(parser, canonical);
+    MerIterator mers(parser, canonical, tenx);
 
     for (; mers; ++mers) {
         ary.add(*mers, 1);
@@ -217,7 +217,7 @@ void kat::JellyfishHelper::countSlice(HashCounter& ary, SequenceParser& parser, 
  * @param seqFile Sequence file to count
  * @return The hash array
  */
-LargeHashArrayPtr kat::JellyfishHelper::countSeqFile(const vector<path>& seqFiles, HashCounter& hashCounter, bool canonical, uint16_t threads) {
+LargeHashArrayPtr kat::JellyfishHelper::countSeqFile(const vector<path>& seqFiles, HashCounter& hashCounter, bool canonical, bool tenx, uint16_t threads) {
 
     // Convert paths to a format jellyfish is happy with
     vector<const char*> paths;
@@ -236,7 +236,7 @@ LargeHashArrayPtr kat::JellyfishHelper::countSeqFile(const vector<path>& seqFile
     vector<thread> t(threads);
 
     for (int i = 0; i < threads; i++) {
-        t[i] = thread(&kat::JellyfishHelper::countSlice, std::ref(hashCounter), std::ref(parser), canonical);
+        t[i] = thread(&kat::JellyfishHelper::countSlice, std::ref(hashCounter), std::ref(parser), canonical, tenx);
     }
 
     for (int i = 0; i < threads; i++) {

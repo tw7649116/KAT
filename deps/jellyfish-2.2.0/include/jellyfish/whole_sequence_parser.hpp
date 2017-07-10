@@ -60,15 +60,15 @@ public:
     }
   }
 
-  inline bool produce(uint32_t i, sequence_list& buff) {
+  inline bool produce(uint32_t i, sequence_list& buff, bool tenx) {
     stream_status& st = streams_[i];
 
     switch(st.type) {
     case FASTA_TYPE:
-      read_fasta(st, buff);
+      read_fasta(st, buff, tenx);
       break;
     case FASTQ_TYPE:
-      read_fastq(st, buff);
+      read_fastq(st, buff, tenx);
       break;
     case DONE_TYPE:
       return true;
@@ -110,7 +110,7 @@ protected:
     }
   }
 
-  void read_fasta(stream_status& st, sequence_list& buff) {
+  void read_fasta(stream_status& st, sequence_list& buff, bool tenx) {
     size_t&      nb_filled = buff.nb_filled;
     const size_t data_size = buff.data.size();
 
@@ -122,12 +122,12 @@ protected:
       fill_buff.seq.clear();
       for(int c = st.stream->peek(); c != '>' && c != EOF; c = st.stream->peek()) {
         std::getline(*st.stream, st.buffer); // Wish there was an easy way to combine the
-        fill_buff.seq.append(st.buffer);             // two lines avoiding copying
+        fill_buff.seq.append(tenx ? st.buffer.substr(16) : st.buffer);             // two lines avoiding copying
       }
     }
   }
 
-  void read_fastq(stream_status& st, sequence_list& buff) {
+  void read_fastq(stream_status& st, sequence_list& buff, bool tenx) {
     size_t&      nb_filled = buff.nb_filled;
     const size_t data_size = buff.data.size();
 
@@ -139,7 +139,7 @@ protected:
       fill_buff.seq.clear();
       while(st.stream->peek() != '+' && st.stream->peek() != EOF) {
         std::getline(*st.stream, st.buffer); // Wish there was an easy way to combine the
-        fill_buff.seq.append(st.buffer);             // two lines avoiding copying
+        fill_buff.seq.append(tenx ? st.buffer.substr(16) : st.buffer);             // two lines avoiding copying
       }
       if(!st.stream->good())
         throw std::runtime_error("Truncated fastq file");

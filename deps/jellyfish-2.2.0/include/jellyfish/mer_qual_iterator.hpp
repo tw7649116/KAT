@@ -38,8 +38,8 @@ public:
   typedef MerType      mer_type;
   typedef SequencePool sequence_parser_type;
 
-  mer_qual_iterator(SequencePool& seq, char min_qual, bool canonical = false) :
-    job_(new typename SequencePool::job(seq)),
+  mer_qual_iterator(SequencePool& seq, char min_qual, bool canonical = false, bool tenx = false) :
+    job_(new typename SequencePool::job(seq, tenx)),
     filled_(0), min_qual_(min_qual), canonical_(canonical), index_(0)
   {
     if(job_->is_empty()) {

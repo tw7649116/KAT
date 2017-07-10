@@ -94,7 +94,7 @@ public:
 
   //  file_type get_type() const { return type; }
 
-  inline bool produce(uint32_t i, sequence_ptr& buff) {
+  inline bool produce(uint32_t i, sequence_ptr& buff, bool tenx) {
     stream_status& st = streams_[i];
 
     switch(st.type) {

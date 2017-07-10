@@ -238,6 +238,7 @@ int kat::Gcp::main(int argc, char *argv[]) {
     double          cvg_scale;
     uint16_t        cvg_bins;
     bool            canonical;      // Deprecated... for removal in KAT 3.0
+	bool		tenx;
     bool            non_canonical;
     uint16_t        mer_len;
     uint64_t        hash_size;
@@ -265,7 +266,9 @@ int kat::Gcp::main(int argc, char *argv[]) {
                 "(DEPRECATED) If counting fast(a/q) input, this option specifies whether the jellyfish hash represents K-mers produced for both strands (canonical), or only the explicit kmer found.")
             ("non_canonical,N", po::bool_switch(&non_canonical)->default_value(false),
                 "If counting fast(a/q) input, this option specifies whether the jellyfish hash represents K-mers produced for both strands (canonical), or only the explicit kmer found.")
-            ("mer_len,m", po::value<uint16_t>(&mer_len)->default_value(DEFAULT_MER_LEN),
+            ("tenx,T", po::bool_switch(&tenx)->default_value(false),
+                "Input contains 10x data (R1 file will have first 16 bases of each read stripped)")
+	("mer_len,m", po::value<uint16_t>(&mer_len)->default_value(DEFAULT_MER_LEN),
                 "The kmer length to use in the kmer hashes.  Larger values will provide more discriminating power between kmers but at the expense of additional memory and lower coverage.")
             ("hash_size,H", po::value<uint64_t>(&hash_size)->default_value(DEFAULT_HASH_SIZE),
                 "If kmer counting is required for the input, then use this value as the hash size.  If this hash size is not large enough for your dataset then the default behaviour is to double the size of the hash and recount, which will increase runtime and memory usage.")
@@ -315,6 +318,7 @@ int kat::Gcp::main(int argc, char *argv[]) {
     Gcp gcp(inputs);
     gcp.setThreads(threads);
     gcp.setCanonical(non_canonical ? non_canonical : canonical ? canonical : true);        // Some crazy logic to default behaviour to canonical if not told otherwise
+    gcp.setTenx(tenx);
     gcp.setCvgBins(cvg_bins);
     gcp.setCvgScale(cvg_scale);
     gcp.setHashSize(hash_size);

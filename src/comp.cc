@@ -611,6 +611,9 @@ int kat::Comp::main(int argc, char *argv[]) {
     bool non_canonical_1;
     bool non_canonical_2;
     bool non_canonical_3;
+	bool tenx_1;
+	bool tenx_2;
+	bool tenx_3;
     uint64_t hash_size_1;
     uint64_t hash_size_2;
     uint64_t hash_size_3;
@@ -653,6 +656,12 @@ int kat::Comp::main(int argc, char *argv[]) {
                 "If counting fast(a/q) for input 2, this option specifies whether the jellyfish hash represents K-mers produced for both strands (canonical), or only the explicit kmer found.")
             ("non_canonical_3,P", po::bool_switch(&non_canonical_3)->default_value(false),
                 "If counting fast(a/q) for input 3, this option specifies whether the jellyfish hash represents K-mers produced for both strands (canonical), or only the explicit kmer found.")                    
+            ("tenx_1,T", po::bool_switch(&tenx_1)->default_value(false),
+                "Input group 1 contains 10x data (R1 file will have first 16 bases of each read stripped)")
+            ("tenx_2,U", po::bool_switch(&tenx_2)->default_value(false),
+                "Input group 2 contains 10x data (R1 file will have first 16 bases of each read stripped)")
+            ("tenx_3,V", po::bool_switch(&tenx_3)->default_value(false),
+                "Input group 3 contains 10x data (R1 file will have first 16 bases of each read stripped)")
             ("mer_len,m", po::value<uint16_t>(&mer_len)->default_value(DEFAULT_MER_LEN),
                 "The kmer length to use in the kmer hashes.  Larger values will provide more discriminating power between kmers but at the expense of additional memory and lower coverage.")
             ("hash_size_1,H", po::value<uint64_t>(&hash_size_1)->default_value(DEFAULT_HASH_SIZE),
@@ -752,6 +761,9 @@ int kat::Comp::main(int argc, char *argv[]) {
     comp.setCanonical(0, non_canonical_1 ? non_canonical_1 : canonical_1 ? canonical_1 : true);
     comp.setCanonical(1, non_canonical_2 ? non_canonical_2 : canonical_2 ? canonical_2 : true);
     comp.setCanonical(2, non_canonical_3 ? non_canonical_3 : canonical_3 ? canonical_3 : true);
+	comp.setTenx(0, tenx_1);
+	comp.setTenx(0, tenx_2);
+	comp.setTenx(0, tenx_3);
     comp.setHashSize(0, hash_size_1);
     comp.setHashSize(1, hash_size_2);
     comp.setHashSize(2, hash_size_3);

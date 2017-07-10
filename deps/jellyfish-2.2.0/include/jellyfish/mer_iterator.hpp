@@ -30,13 +30,14 @@ class mer_iterator : public std::iterator<std::input_iterator_tag,MerType> {
   MerType                     rcm_; // reverse complement mer
   unsigned int                filled_;
   const bool                  canonical_;
+  const bool			tenx_;
 
 public:
   typedef MerType      mer_type;
   typedef SequencePool sequence_parser_type;
 
-  mer_iterator(SequencePool& seq, bool canonical = false) :
-    job_(new typename SequencePool::job(seq)), cseq_(0), filled_(0), canonical_(canonical)
+  mer_iterator(SequencePool& seq, bool canonical = false, bool tenx = false) :
+    job_(new typename SequencePool::job(seq, tenx)), cseq_(0), filled_(0), canonical_(canonical), tenx_(tenx)
   {
     if(job_->is_empty()) {
       delete job_;
@@ -46,7 +47,7 @@ public:
       this->operator++();
     }
   }
-  mer_iterator() : job_(0), cseq_(0), filled_(0), canonical_(false) { }
+  mer_iterator() : job_(0), cseq_(0), filled_(0), canonical_(false), tenx_(false) { }
   //  mer_iterator(const mer_iterator& rhs) : job_(rhs.job_), cseq_(rhs.cseq_), m_(rhs.m_), filled_(rhs.filled_) { }
   ~mer_iterator() {
     delete job_;

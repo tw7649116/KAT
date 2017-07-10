@@ -135,7 +135,7 @@ void kat::InputHandler::count(const uint16_t threads) {
     cout << "Input " << index << " is a sequence file.  Counting kmers for input " << index << " (" << pathString() << ") ...";
     cout.flush();
 
-    hash = JellyfishHelper::countSeqFile(input, *hashCounter, canonical, threads);
+    hash = JellyfishHelper::countSeqFile(input, *hashCounter, canonical, tenx, threads);
     
     // Create header for newly counted hash
     header = make_shared<file_header>();

@@ -44,6 +44,7 @@ namespace kat {
         vector<path> input;
         InputMode mode = InputMode::COUNT;
         bool canonical = false;
+	bool tenx = false;
         uint64_t hashSize = DEFAULT_HASH_SIZE;
         uint16_t merLen = DEFAULT_MER_LEN;
         bool dumpHash = false;

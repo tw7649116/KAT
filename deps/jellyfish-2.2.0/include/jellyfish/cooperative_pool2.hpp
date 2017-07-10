@@ -147,9 +147,11 @@ public:
   // is done and we should stop processing.
   class job {
     cooperative_pool2& cp_;
+    bool		tenx_;	// Used to skip first 16 
     uint32_t          i_;       // Index of element
+    
   public:
-    job(cooperative_pool2& cp) : cp_(cp), i_(cp_.get_element()) { }
+    job(cooperative_pool2& cp, bool tenx) : cp_(cp), tenx_(tenx), i_(cp_.get_element(tenx)) { }
     ~job() { release(); }
 
     void release() {
@@ -160,7 +162,7 @@ public:
     bool is_empty() const { return i_ == cbT::guard; }
     void next() {
       release();
-      i_ = cp_.get_element();
+      i_ = cp_.get_element(tenx_);
     }
 
     element_type& operator*() { return cp_.elts_[i_]; }
@@ -207,7 +209,7 @@ public:
 
 private:
   enum PRODUCER_STATUS { PRODUCER_PRODUCED, PRODUCER_DONE, PRODUCER_EXISTS };
-  uint32_t get_element() {
+  uint32_t get_element(bool tenx) {
     int iteration = 0;
 
     while(true) {
@@ -215,14 +217,14 @@ private:
       // queue. Disregard return value: in any every case will
       // attempt to get an element for ourselves
       if(prod_cons_.fill() < prod_cons_.size() / 2)
-        become_producer();
+        become_producer(tenx);
 
       uint32_t i = prod_cons_.dequeue();
       if(i != cbT::guard)
         return i;
 
       // Try to become producer
-      switch(become_producer()) {
+      switch(become_producer(tenx)) {
       case PRODUCER_PRODUCED:
         iteration = 0; // Produced. Attempt anew to get an element
         break;
@@ -235,7 +237,7 @@ private:
     }
   }
 
-  PRODUCER_STATUS become_producer() {
+  PRODUCER_STATUS become_producer(bool tenx) {
     if(prod_cons_.is_closed())
       return PRODUCER_DONE;
 
@@ -252,7 +254,7 @@ private:
         if(i == cbT::guard)
           return PRODUCER_PRODUCED;
 
-        if(static_cast<D*>(this)->produce(producer_token.token_, elts_[i])) // produce returns true if done
+        if(static_cast<D*>(this)->produce(producer_token.token_, elts_[i], tenx)) // produce returns true if done
           break;
 
         prod_cons_.enqueue_no_check(i);

@@ -80,7 +80,7 @@ namespace kat {
         
         LargeHashArrayPtr hash;
         bool canonical;
-        uint16_t merLen;
+	uint16_t merLen;
         file_header header;
         
     public:
@@ -129,7 +129,7 @@ namespace kat {
         * @param parser The parser that handles the input stream and chunking
         * @param canonical whether or not the kmers should be treated as canonical or not
         */
-        static void countSlice(HashCounter& ary, SequenceParser& parser, bool canonical);
+        static void countSlice(HashCounter& ary, SequenceParser& parser, bool canonical, bool tenx);
 
         /**
          * Counts kmers in the given sequence file (Fasta or Fastq) returning
@@ -137,10 +137,10 @@ namespace kat {
          * @param seqFile Sequence file to count
          * @return The hash array counter
          */
-        static LargeHashArrayPtr countSeqFile(const path& p, HashCounter& hashCounter, bool canonical, uint16_t threads) {
+        static LargeHashArrayPtr countSeqFile(const path& p, HashCounter& hashCounter, bool canonical, bool tenx, uint16_t threads) {
             vector<path> paths;
             paths.push_back(p);
-            return countSeqFile(paths, hashCounter, canonical, threads);
+            return countSeqFile(paths, hashCounter, canonical, tenx, threads);
         }
 
         /**
@@ -149,7 +149,7 @@ namespace kat {
          * @param seqFile Sequence file to count
          * @return The hash array counter
          */
-        static LargeHashArrayPtr countSeqFile(const vector<path>& seqFiles, HashCounter& hashCounter, bool canonical, uint16_t threads);
+        static LargeHashArrayPtr countSeqFile(const vector<path>& seqFiles, HashCounter& hashCounter, bool canonical, bool tenx, uint16_t threads);
 
         
         

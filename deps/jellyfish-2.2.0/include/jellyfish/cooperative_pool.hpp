@@ -214,7 +214,7 @@ private:
     }
   }
 
-  PRODUCER_STATUS become_producer() {
+  PRODUCER_STATUS become_producer(bool tenx) {
     if(prod_cons_.is_closed())
       return PRODUCER_DONE;
 
@@ -231,7 +231,7 @@ private:
         if(i == cbT::guard)
           return PRODUCER_PRODUCED;
 
-        if(static_cast<D*>(this)->produce(elts_[i])) // produce returns true if done
+        if(static_cast<D*>(this)->produce(elts_[i], tenx)) // produce returns true if done
           break;
 
         prod_cons_.enqueue_no_check(i);
